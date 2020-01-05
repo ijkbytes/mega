@@ -1,0 +1,17 @@
+{
+  "http": {
+    "port": 8080,
+    "debug": true
+  },
+
+  "log": {
+    "level": 0,
+    "path": "./log/mega.log",
+    "fileCount": 7,
+    "stackTrace": false,
+    "maxSize": 1,
+    "maxAge": 1,
+    "maxBackups": 7,
+    "console": true
+  }
+}
