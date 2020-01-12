@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/ijkbytes/mega/base/config"
 	"github.com/ijkbytes/mega/base/log"
 	"github.com/ijkbytes/mega/server"
+	"github.com/ijkbytes/mega/service"
 	"go.uber.org/zap"
 	"net/http"
 )
@@ -26,13 +28,10 @@ func (app *Application) run() error {
 	return nil
 }
 
-func main()  {
-	if err := config.Init(); err != nil {
-		panic(err)
-	}
-
-	logger := log.Init()
-	defer logger.Sync()
+func main() {
+	defer log.Sync()
+	service.ConnectDB()
+	defer service.DisconnectDB()
 
 	app := &Application{
 		logger: log.Get("Application"),

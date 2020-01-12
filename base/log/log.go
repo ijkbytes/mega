@@ -31,7 +31,7 @@ func toLevel(lv int) zap.AtomicLevel {
 	}
 }
 
-func Init() *zap.Logger {
+func init() {
 	cores := []zapcore.Core{}
 
 	encoderCfg := zap.NewProductionEncoderConfig()
@@ -77,8 +77,10 @@ func Init() *zap.Logger {
 	}
 
 	logger = zap.New(core, opts...)
+}
 
-	return logger
+func Sync() {
+	logger.Sync()
 }
 
 func Get(name string) *zap.Logger {

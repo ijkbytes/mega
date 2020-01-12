@@ -13,5 +13,14 @@
     "maxAge": 1,
     "maxBackups": 7,
     "console": true
+  },
+
+  "db": {
+    "type": "mysql",
+    "user": "root",
+    "password": "12345",
+    "host": "localhost:3306",
+    "name": "mega",
+    "tablePrefix": "mega_"
   }
 }

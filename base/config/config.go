@@ -3,15 +3,16 @@ package config
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io/ioutil"
 )
 
 var Mega *Config
 
 type LogCfg struct {
-	Level int `json:"level"`
-	Path string `json:"path"`
-	FileCount int `json:"fileCount"`
+	Level      int    `json:"level"`
+	Path       string `json:"path"`
+	FileCount  int    `json:"fileCount"`
 	StackTrace bool   `json:"stackTrace"`
 	MaxSize    int    `json:"maxSize"`
 	MaxAge     int    `json:"maxAge"`
@@ -20,26 +21,34 @@ type LogCfg struct {
 }
 
 type HttpCfg struct {
-	Port uint16 `json:"port"`
-	Debug bool `json:"debug"`
+	Port  uint16 `json:"port"`
+	Debug bool   `json:"debug"`
+}
+
+type DbCfg struct {
+	Type        string `json:"type"`
+	User        string `json:"user"`
+	Password    string `json:"password"`
+	Host        string `json:"host"`
+	Name        string `json:"name"`
+	TablePrefix string `json:"tablePrefix"`
 }
 
 type Config struct {
 	Http *HttpCfg
-	Log *LogCfg
+	Log  *LogCfg
+	Db   *DbCfg
 }
 
-func Init() error {
+func init() {
 	cfgPath := flag.String("conf", "mega.json", "-conf filepath")
 	f, err := ioutil.ReadFile(*cfgPath)
 	if err != nil {
-		return err
+		panic(fmt.Sprintf("load config file err: %v", err))
 	}
 
 	Mega = new(Config)
 	if err = json.Unmarshal(f, Mega); err != nil {
-		return err
+		panic(fmt.Sprintf("load config file err: %v", err))
 	}
-
-	return nil
 }

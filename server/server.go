@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ijkbytes/mega/base/config"
 	"github.com/ijkbytes/mega/base/log"
+	"github.com/ijkbytes/mega/server/api"
 	"github.com/ijkbytes/mega/server/pages"
 	"go.uber.org/zap"
 	"net/http"
@@ -13,7 +14,7 @@ import (
 
 var logger *zap.Logger
 
-func serveException(ctx *gin.Context)  {
+func serveException(ctx *gin.Context) {
 	defer func(ctx *gin.Context) {
 		if r := recover(); r != nil {
 			pc := make([]uintptr, 10)
@@ -61,11 +62,20 @@ func GetRouter() *gin.Engine {
 	{
 		pagesGroup.GET("/", pages.Index)
 	}
-	//
-	//apiGroup := router.Group("/api")
-	//{
-	//	apiGroup.GET("articles")
-	//}
+
+	apiGroup := router.Group("/api")
+	{
+		apiGroup.GET("/tags", api.GetTags)
+		apiGroup.POST("/tags", api.AddTag)
+		apiGroup.PUT("/tags/:id", api.EditTag)
+		apiGroup.DELETE("/tags/:id", api.DeleteTag)
+
+		apiGroup.GET("/articles", api.GetArticles)
+		apiGroup.GET("/articles/:id", api.GetArticle)
+		apiGroup.POST("/articles", api.AddArticle)
+		apiGroup.PUT("/articles/:id", api.EditArticle)
+		apiGroup.DELETE("/articles/:id", api.DeleteArticle)
+	}
 
 	return router
 }
