@@ -9,7 +9,7 @@ import (
 
 func Index(c *gin.Context) {
 	page := utils.GetPage(c)
-	articles := service.Article.GetArticles(page-1, 10, make(map[string]interface{}))
+	articles := service.Article.GetArticles((page-1)*10, 10, make(map[string]interface{}))
 	count := service.Article.GetArticleTotal(make(map[string]interface{}))
 	pagination := utils.NewPagination(page, 10, count)
 	c.HTML(http.StatusOK, "index.html", gin.H{
