@@ -69,9 +69,19 @@ func AddTag(c *gin.Context) {
 func EditTag(c *gin.Context) {
 	logger := log.Get("EditTag").Sugar()
 	var req struct {
-		Id    int    `json:"id" binding:"required"`
 		Name  string `json:"name" binding:"required"`
 		State int    `json:"state" binding:"oneof=0 1"`
+	}
+	var uriParams struct {
+		Id int `uri:"id" binding:"required"`
+	}
+	if err := c.ShouldBindUri(&uriParams); err != nil {
+		logger.Warnf("invalid params: %v", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": CodeInvalidParams,
+			"msg":  getErrMsg(CodeInvalidParams),
+		})
+		return
 	}
 	if err := c.ShouldBind(&req); err != nil {
 		logger.Warnf("invalid params: %v", err.Error())
@@ -82,8 +92,8 @@ func EditTag(c *gin.Context) {
 		return
 	}
 
-	if !service.Tag.ExistTagById(req.Id) {
-		logger.Warnf("cannot find id: %v", req.Id)
+	if !service.Tag.ExistTagById(uriParams.Id) {
+		logger.Warnf("cannot find id: %v", uriParams.Id)
 		c.JSON(http.StatusNotFound, gin.H{
 			"code": CodeNotExistTag,
 			"msg":  getErrMsg(CodeNotExistTag),
@@ -94,7 +104,7 @@ func EditTag(c *gin.Context) {
 	data := make(map[string]interface{})
 	data["name"] = req.Name
 	data["state"] = req.State
-	service.Tag.EditTag(req.Id, data)
+	service.Tag.EditTag(uriParams.Id, data)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": CodeSuccess,

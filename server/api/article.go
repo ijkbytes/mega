@@ -10,9 +10,9 @@ import (
 func GetArticle(c *gin.Context) {
 	logger := log.Get("GetArticle").Sugar()
 	var req struct {
-		Id int `form:"id" binding:"required"`
+		Id int `uri:"id" binding:"required"`
 	}
-	if err := c.ShouldBind(&req); err != nil {
+	if err := c.ShouldBindUri(&req); err != nil {
 		logger.Warnf("invalid params: %v", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": CodeInvalidParams,
@@ -120,12 +120,22 @@ func AddArticle(c *gin.Context) {
 func EditArticle(c *gin.Context) {
 	logger := log.Get("EditArticle").Sugar()
 	var req struct {
-		Id      int    `json:"id" binding:"required"`
 		TagID   int    `json:"tag_id" binding:"required"`
 		Title   string `json:"title" binding:"required"`
 		Desc    string `json:"desc"`
 		Content string `json:"content" binding:"required"`
 		State   int    `json:"state" binding:"oneof=0 1"`
+	}
+	var uriParams struct {
+		Id int `uri:"id" binding:"required"`
+	}
+	if err := c.ShouldBindUri(&uriParams); err != nil {
+		logger.Warnf("invalid params: %v", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": CodeInvalidParams,
+			"msg":  getErrMsg(CodeInvalidParams),
+		})
+		return
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -136,8 +146,8 @@ func EditArticle(c *gin.Context) {
 		return
 	}
 
-	if !service.Article.ExistArticleById(req.Id) {
-		logger.Warnf("cannot find article id: %v", req.Id)
+	if !service.Article.ExistArticleById(uriParams.Id) {
+		logger.Warnf("cannot find article id: %v", uriParams.Id)
 		c.JSON(http.StatusNotFound, gin.H{
 			"code": CodeNotExistArticle,
 			"msg":  getErrMsg(CodeNotExistArticle),
@@ -145,7 +155,7 @@ func EditArticle(c *gin.Context) {
 		return
 	}
 	if !service.Tag.ExistTagById(req.TagID) {
-		logger.Warnf("cannot find tag id: %v", req.Id)
+		logger.Warnf("cannot find tag id: %v", uriParams.Id)
 		c.JSON(http.StatusNotFound, gin.H{
 			"code": CodeNotExistTag,
 			"msg":  getErrMsg(CodeNotExistTag),
@@ -158,7 +168,7 @@ func EditArticle(c *gin.Context) {
 	data["title"] = req.Title
 	data["desc"] = req.Desc
 	data["content_md"] = req.Content
-	service.Article.EditArticle(req.Id, data)
+	service.Article.EditArticle(uriParams.Id, data)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
