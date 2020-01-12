@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type="text/css" rel="stylesheet" href="/static/simple/css/main.css">
+</head>
+<body>
+<header>
+    <div>
+        <h1><a href="/">Mega Simple</a></h1>
+    </div>
+    <nav><a href="/">About</a></nav>
+</header>
+<main>
+    <article>
+        <div class="title">
+            <h1>{{.Article.Title}}</h1>
+        </div>
+        <div class="meta">
+            <div>{{.Article.CreateAt.Format "2006-01-02 15:04:05"}}</div>
+        </div>
+        <div class="content">
+            {{.Article.ContentMD}}
+        </div>
+    </article>
+</main>
+<footer>
+    <div>
+        <div>Copyright © 2019–2020, ijkbytes transplant from <a href="https://github.com/yanlinlin82/simple-style/">simple-style</a>; all rights reserved.</div>
+    </div>
+</footer>
+</body>
+</html>

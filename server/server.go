@@ -62,6 +62,7 @@ func GetRouter() *gin.Engine {
 	pagesGroup := router.Group("/")
 	{
 		pagesGroup.GET("/", pages.Index)
+		pagesGroup.GET("/articles/:id", pages.Article)
 	}
 
 	apiGroup := router.Group("/api")
