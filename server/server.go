@@ -31,8 +31,8 @@ func serveException(ctx *gin.Context) {
 			)
 
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-				"result": "error",
-				"msg":    "Unknow Exception",
+				"code": http.StatusInternalServerError,
+				"msg":  "Unknow Exception",
 			})
 		}
 	}(ctx)
@@ -56,7 +56,8 @@ func GetRouter() *gin.Engine {
 	logger = log.Get("server")
 	router := newRouter()
 
-	router.LoadHTMLGlob("theme/sample/*")
+	router.LoadHTMLGlob("theme/simple/*.html")
+	router.Static("/static/simple/css", "theme/simple/css")
 
 	pagesGroup := router.Group("/")
 	{
