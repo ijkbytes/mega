@@ -27,8 +27,8 @@ func GetArticle(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{
 			"code": CodeNotExistArticle,
 			"msg":  getErrMsg(CodeNotExistArticle),
-			"data": article,
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -113,7 +113,6 @@ func AddArticle(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "success",
-		"data": make(map[string]interface{}),
 	})
 }
 
@@ -173,7 +172,6 @@ func EditArticle(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "success",
-		"data": make(map[string]string),
 	})
 }
 
@@ -204,6 +202,5 @@ func DeleteArticle(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "success",
-		"data": make(map[string]string),
 	})
 }

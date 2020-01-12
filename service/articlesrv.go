@@ -28,11 +28,15 @@ func (srv *articleService) GetArticles(offset int, limit int, maps interface{}) 
 	return
 }
 
-func (srv *articleService) GetArticle(id int) (article *model.Article) {
-	db.Where("id = ?", id).First(article)
-	db.Model(&article).Related(article.Tag)
+func (srv *articleService) GetArticle(id int) *model.Article {
+	var article model.Article
+	db.Where("id = ?", id).First(&article)
+	db.Model(&article).Related(&article.Tag)
 
-	return
+	if article.Id > 0 {
+		return &article
+	}
+	return nil
 }
 
 func (srv *articleService) EditArticle(id int, data interface{}) bool {
