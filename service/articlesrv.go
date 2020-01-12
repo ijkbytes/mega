@@ -23,8 +23,8 @@ func (srv *articleService) GetArticleTotal(maps interface{}) (count int) {
 	return
 }
 
-func (srv *articleService) GetArticles(offset int, limit int, maps interface{}) (articles []model.Article) {
-	db.Preload("Tag").Where(maps).Offset(offset).Limit(limit).Find(&articles)
+func (srv *articleService) GetArticles(offset int, limit int, maps interface{}, order ...string) (articles []model.Article) {
+	db.Preload("Tag").Order("-id").Where(maps).Offset(offset).Limit(limit).Find(&articles)
 	return
 }
 
