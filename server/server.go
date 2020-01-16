@@ -2,10 +2,13 @@ package server
 
 import (
 	"fmt"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/ijkbytes/mega/base/config"
 	"github.com/ijkbytes/mega/base/log"
 	"github.com/ijkbytes/mega/server/api"
+	"github.com/ijkbytes/mega/server/middleware"
 	"github.com/ijkbytes/mega/server/pages"
 	"go.uber.org/zap"
 	"net/http"
@@ -56,6 +59,9 @@ func GetRouter() *gin.Engine {
 	logger = log.Get("server")
 	router := newRouter()
 
+	store := cookie.NewStore([]byte(config.Mega.Session.Secret))
+	router.Use(sessions.Sessions(config.Mega.Session.Name, store))
+
 	router.LoadHTMLGlob("theme/simple/*.html")
 	router.Static("/static/simple/css", "theme/simple/css")
 
@@ -67,16 +73,23 @@ func GetRouter() *gin.Engine {
 
 	apiGroup := router.Group("/api")
 	{
-		apiGroup.GET("/tags", api.GetTags)
-		apiGroup.POST("/tags", api.AddTag)
-		apiGroup.PUT("/tags/:id", api.EditTag)
-		apiGroup.DELETE("/tags/:id", api.DeleteTag)
+		group1 := apiGroup.Group("/")
+		{
+			group1.GET("login", api.Login)
+		}
+		group2 := apiGroup.Group("/", middleware.NeedLogin)
+		{
+			group2.GET("/tags", api.GetTags)
+			group2.POST("/tags", api.AddTag)
+			group2.PUT("/tags/:id", api.EditTag)
+			group2.DELETE("/tags/:id", api.DeleteTag)
 
-		apiGroup.GET("/articles", api.GetArticles)
-		apiGroup.GET("/articles/:id", api.GetArticle)
-		apiGroup.POST("/articles", api.AddArticle)
-		apiGroup.PUT("/articles/:id", api.EditArticle)
-		apiGroup.DELETE("/articles/:id", api.DeleteArticle)
+			group2.GET("/articles", api.GetArticles)
+			group2.GET("/articles/:id", api.GetArticle)
+			group2.POST("/articles", api.AddArticle)
+			group2.PUT("/articles/:id", api.EditArticle)
+			group2.DELETE("/articles/:id", api.DeleteArticle)
+		}
 	}
 
 	return router

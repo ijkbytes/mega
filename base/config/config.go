@@ -34,10 +34,17 @@ type DbCfg struct {
 	TablePrefix string `json:"tablePrefix"`
 }
 
+type SessionCfg struct {
+	Secret string `json:"secret"`
+	Name   string `json:"name"`
+	TTL    int64  `json:"ttl"`
+}
+
 type Config struct {
-	Http *HttpCfg
-	Log  *LogCfg
-	Db   *DbCfg
+	Http    *HttpCfg
+	Log     *LogCfg
+	Db      *DbCfg
+	Session *SessionCfg
 }
 
 func init() {

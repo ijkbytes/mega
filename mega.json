@@ -22,5 +22,11 @@
     "host": "localhost:3306",
     "name": "mega",
     "tablePrefix": "mega_"
+  },
+
+  "session": {
+    "secret": "mega",
+    "name": "mega_sess",
+    "ttl": 120
   }
 }
