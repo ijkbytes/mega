@@ -73,22 +73,24 @@ func GetRouter() *gin.Engine {
 
 	apiGroup := router.Group("/api")
 	{
-		group1 := apiGroup.Group("/")
+		groupUser := apiGroup.Group("/")
 		{
-			group1.GET("login", api.Login)
+			groupUser.POST("/login", api.Login)
+			groupUser.POST("/logout", api.Logout)
+			groupUser.POST("/user", api.Register)
 		}
-		group2 := apiGroup.Group("/", middleware.NeedLogin)
+		groupOthers := apiGroup.Group("/", middleware.NeedLogin)
 		{
-			group2.GET("/tags", api.GetTags)
-			group2.POST("/tags", api.AddTag)
-			group2.PUT("/tags/:id", api.EditTag)
-			group2.DELETE("/tags/:id", api.DeleteTag)
+			groupOthers.GET("/tags", api.GetTags)
+			groupOthers.POST("/tags", api.AddTag)
+			groupOthers.PUT("/tags/:id", api.EditTag)
+			groupOthers.DELETE("/tags/:id", api.DeleteTag)
 
-			group2.GET("/articles", api.GetArticles)
-			group2.GET("/articles/:id", api.GetArticle)
-			group2.POST("/articles", api.AddArticle)
-			group2.PUT("/articles/:id", api.EditArticle)
-			group2.DELETE("/articles/:id", api.DeleteArticle)
+			groupOthers.GET("/articles", api.GetArticles)
+			groupOthers.GET("/articles/:id", api.GetArticle)
+			groupOthers.POST("/articles", api.AddArticle)
+			groupOthers.PUT("/articles/:id", api.EditArticle)
+			groupOthers.DELETE("/articles/:id", api.DeleteArticle)
 		}
 	}
 

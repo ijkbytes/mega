@@ -7,6 +7,10 @@ const (
 
 	CodeNotExistTag     = 10001
 	CodeNotExistArticle = 10002
+
+	CodeUserError      = 20001
+	CodeUserExist      = 20002
+	CodeUserLoginError = 20003
 )
 
 func getErrMsg(code int) string {
@@ -21,6 +25,12 @@ func getErrMsg(code int) string {
 		return "cannot find tag"
 	case CodeNotExistArticle:
 		return "cannot find article"
+	case CodeUserError:
+		return "user error"
+	case CodeUserExist:
+		return "user has been exist"
+	case CodeUserLoginError:
+		return "password or user name error"
 	default:
 		return "unknown error"
 	}
