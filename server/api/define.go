@@ -1,5 +1,10 @@
 package api
 
+import (
+	"github.com/gin-gonic/gin"
+	"net/http"
+)
+
 const (
 	CodeSuccess       = 200
 	CodeInvalidParams = 400
@@ -34,4 +39,26 @@ func getErrMsg(code int) string {
 	default:
 		return "unknown error"
 	}
+}
+
+type Result struct {
+	httpStatus int         `json:"-"`
+	Code       int         `json:"code"`
+	Msg        string      `json:"msg"`
+	Data       interface{} `json:"data,omitempty"`
+}
+
+func returnResult(c *gin.Context, ret *Result) {
+	if ret.httpStatus == 0 {
+		ret.httpStatus = http.StatusOK
+	}
+
+	if ret.Code == 0 {
+		ret.Code = CodeSuccess
+	}
+
+	if len(ret.Msg) == 0 {
+		ret.Msg = getErrMsg(ret.Code)
+	}
+	c.AbortWithStatusJSON(ret.httpStatus, ret)
 }

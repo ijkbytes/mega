@@ -9,29 +9,28 @@ import (
 )
 
 func GetBasicSettings(c *gin.Context) {
+	result := &Result{}
+	defer returnResult(c, result)
+
 	settings := service.Setting.GetCategorySettings(model.SettingCategoryBasic)
 	data := map[string]interface{}{}
 	for _, setting := range settings {
 		data[setting.Name] = setting.Value
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": CodeSuccess,
-		"msg":  getErrMsg(CodeSuccess),
-		"data": data,
-	})
+	result.Data = data
 }
 
 func UpdateBasicSettings(c *gin.Context) {
 	logger := log.Get("UpdateBasicSettings").Sugar()
+	result := &Result{}
+	defer returnResult(c, result)
 
 	args := make(map[string]interface{})
 	if err := c.ShouldBindJSON(&args); err != nil {
 		logger.Warnf("invalid params: %v", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code": CodeInvalidParams,
-			"msg":  getErrMsg(CodeInvalidParams),
-		})
+		result.httpStatus = http.StatusBadRequest
+		result.Code = CodeInvalidParams
 		return
 	}
 
@@ -47,15 +46,8 @@ func UpdateBasicSettings(c *gin.Context) {
 
 	if err := service.Setting.UpdateSettings(model.SettingCategoryBasic, basics); err != nil {
 		logger.Errorf("update settings err: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code": CodeError,
-			"msg":  getErrMsg(CodeError),
-		})
+		result.httpStatus = http.StatusInternalServerError
+		result.Code = CodeError
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": CodeSuccess,
-		"msg":  getErrMsg(CodeSuccess),
-	})
 }

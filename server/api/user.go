@@ -15,18 +15,19 @@ import (
 
 func Register(c *gin.Context) {
 	logger := log.Get("Register").Sugar()
+	result := &Result{}
+	defer returnResult(c, result)
+
 	var req struct {
-		UserName string `json:"user_name" binding:"required,gte=4,lte=32"`
+		UserName string `json:"userName" binding:"required,gte=4,lte=32"`
 		Email    string `json:"email" binding:"required,email"`
 		Password string `json:"password" binding:"required,gte=8,lte=32,printascii"`
 		Confirm  string `json:"confirm" binding:"eqfield=Password"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		logger.Warnf("invalid params: %v", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code": CodeInvalidParams,
-			"msg":  getErrMsg(CodeInvalidParams),
-		})
+		result.httpStatus = http.StatusBadRequest
+		result.Code = CodeInvalidParams
 		return
 	}
 
@@ -34,10 +35,8 @@ func Register(c *gin.Context) {
 	// todo support for multiple users
 	if count, err := service.User.UsersCount(); err != nil || count > 0 {
 		logger.Warnf("only one user is currently allowed for the blog site")
-		c.JSON(http.StatusForbidden, gin.H{
-			"code": CodeUserExist,
-			"msg":  getErrMsg(CodeUserExist),
-		})
+		result.httpStatus = http.StatusForbidden
+		result.Code = CodeUserExist
 		return
 	}
 
@@ -51,52 +50,43 @@ func Register(c *gin.Context) {
 	}
 	if err := service.User.AddUser(newUser); err != nil {
 		logger.Warnf("register user err: %v", err)
-		c.JSON(http.StatusForbidden, gin.H{
-			"code": CodeUserExist,
-			"msg":  getErrMsg(CodeUserExist),
-		})
+		result.httpStatus = http.StatusForbidden
+		result.Code = CodeUserExist
 		return
 	}
 
 	logger.Infof("create user `%s` success", newUser.UserName)
-	c.JSON(http.StatusOK, gin.H{
-		"code": CodeSuccess,
-		"msg":  getErrMsg(CodeSuccess),
-	})
 }
 
 func Login(c *gin.Context) {
 	logger := log.Get("Login").Sugar()
+	result := &Result{}
+	defer returnResult(c, result)
+
 	var req struct {
-		UserName string `json:"user_name" binding:"required,gte=4,lte=32"`
+		UserName string `json:"userName" binding:"required,gte=4,lte=32"`
 		Password string `json:"password" binding:"required,gte=8,lte=32,printascii"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		logger.Warnf("invalid params: %v", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code": CodeInvalidParams,
-			"msg":  getErrMsg(CodeInvalidParams),
-		})
+		result.httpStatus = http.StatusBadRequest
+		result.Code = CodeInvalidParams
 		return
 	}
 
 	user := service.User.GetUserByName(req.UserName)
 	if user == nil {
 		logger.Warnf("user `%s` not found: %v", req.UserName)
-		c.JSON(http.StatusForbidden, gin.H{
-			"code": CodeUserLoginError,
-			"msg":  getErrMsg(CodeUserLoginError),
-		})
+		result.httpStatus = http.StatusForbidden
+		result.Code = CodeUserLoginError
 		return
 	}
 
 	encrypted := utils.EncryptPassword(req.Password, user.Salt)
 	if strings.Compare(encrypted, user.Password) != 0 {
 		logger.Warnf("user's password error")
-		c.JSON(http.StatusForbidden, gin.H{
-			"code": CodeUserLoginError,
-			"msg":  getErrMsg(CodeUserLoginError),
-		})
+		result.httpStatus = http.StatusForbidden
+		result.Code = CodeUserLoginError
 		return
 	}
 
@@ -112,21 +102,17 @@ func Login(c *gin.Context) {
 	err := session.Save()
 	if err != nil {
 		logger.Errorf("session save err: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code": CodeError,
-			"msg":  getErrMsg(CodeError),
-		})
+		result.httpStatus = http.StatusInternalServerError
+		result.Code = CodeError
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": CodeSuccess,
-		"msg":  getErrMsg(CodeSuccess),
-	})
 }
 
 func Logout(c *gin.Context) {
 	logger := log.Get("Logout").Sugar()
+	result := &Result{}
+	defer returnResult(c, result)
+
 	session := sessions.Default(c)
 	userName, ok := session.Get("userName").(string)
 	if !ok {
@@ -140,18 +126,11 @@ func Logout(c *gin.Context) {
 		session.Clear()
 		if err := session.Save(); err != nil {
 			logger.Errorf("`%s` session save err: %v", userName, err)
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"code": CodeError,
-				"msg":  getErrMsg(CodeError),
-			})
+			result.httpStatus = http.StatusInternalServerError
+			result.Code = CodeError
 			return
 		}
 
 		logger.Infof("`%s` logout success", userName)
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": CodeSuccess,
-		"msg":  getErrMsg(CodeSuccess),
-	})
 }
