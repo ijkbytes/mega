@@ -4,5 +4,5 @@ type Tag struct {
 	Model
 
 	Name  string `gorm:"size:128" json:"name"`
-	State int    `json:"state"`
+	State int    `gorm:"type:tinyint(3)"json:"state"`
 }
