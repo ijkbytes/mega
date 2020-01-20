@@ -46,10 +46,10 @@ func (srv *articleService) EditArticle(id int, data interface{}) bool {
 
 func (srv *articleService) AddArticle(data map[string]interface{}) bool {
 	db.Create(&model.Article{
-		TagID:     data["tag_id"].(int),
+		TagID:     data["tagId"].(int),
 		Title:     data["title"].(string),
 		Desc:      data["desc"].(string),
-		ContentMD: data["content_md"].(string),
+		ContentMD: data["contentMD"].(string),
 		State:     data["state"].(int),
 	})
 
