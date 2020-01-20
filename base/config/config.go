@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"math"
 )
 
 var Mega *Config
@@ -32,6 +33,8 @@ type DbCfg struct {
 	Host        string `json:"host"`
 	Name        string `json:"name"`
 	TablePrefix string `json:"tablePrefix"`
+	Migrate     bool   `json:"migrate"`
+	Debug       bool   `json:"debug"`
 }
 
 type SessionCfg struct {
@@ -48,7 +51,12 @@ type Config struct {
 }
 
 func init() {
-	cfgPath := flag.String("conf", "mega.json", "-conf filepath")
+	cfgPath := flag.String("c", "mega.json", "")
+	debug := flag.Bool("d", false, "")
+	migrate := flag.Bool("m", false, "")
+	port := flag.Int("p", 0, "")
+	flag.Parse()
+
 	f, err := ioutil.ReadFile(*cfgPath)
 	if err != nil {
 		panic(fmt.Sprintf("load config file err: %v", err))
@@ -57,5 +65,20 @@ func init() {
 	Mega = new(Config)
 	if err = json.Unmarshal(f, Mega); err != nil {
 		panic(fmt.Sprintf("load config file err: %v", err))
+	}
+
+	if *port > 0 && *port <= math.MaxUint16 {
+		Mega.Http.Port = uint16(*port)
+	}
+
+	if *debug {
+		Mega.Http.Debug = true
+		Mega.Log.Console = true
+		Mega.Log.Level = 0
+		Mega.Db.Debug = true
+	}
+
+	if *migrate {
+		Mega.Db.Migrate = true
 	}
 }

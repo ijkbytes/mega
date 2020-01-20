@@ -9,3 +9,7 @@ type Model struct {
 	CreateAt time.Time `gorm:"type:datetime;not null;default:CURRENT_TIMESTAMP" json:"create_at"`
 	UpdateAt time.Time `gorm:"type:datetime;not null;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" json:"update_at"`
 }
+
+var AllModels = []interface{}{
+	&User{}, &Article{}, Tag{},
+}

@@ -12,7 +12,7 @@
     "maxSize": 1,
     "maxAge": 1,
     "maxBackups": 7,
-    "console": true
+    "console": false
   },
 
   "db": {
@@ -21,7 +21,9 @@
     "password": "12345",
     "host": "localhost:3306",
     "name": "mega",
-    "tablePrefix": "mega_"
+    "tablePrefix": "mega_",
+    "migrate": false,
+    "debug": true
   },
 
   "session": {

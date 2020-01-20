@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/ijkbytes/mega/base/config"
 	"github.com/ijkbytes/mega/base/log"
+	"github.com/ijkbytes/mega/model"
 	"github.com/jinzhu/gorm"
 	"time"
 )
@@ -32,14 +33,19 @@ func ConnectDB() {
 		return config.Mega.Db.TablePrefix + defaultTableName
 	}
 
-	//db.LogMode(true)
+	db.LogMode(config.Mega.Db.Debug)
 
 	db.SingularTable(true)
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
 	db.DB().SetConnMaxLifetime(5 * time.Minute)
 
-	//db.CreateTable(&model.Tag{})
+	if config.Mega.Db.Migrate {
+		db := db.Set("gorm:table_options", "ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci")
+		if err := db.AutoMigrate(model.AllModels...).Error; err != nil {
+			logger.Fatal("auto migrate tables failed: " + err.Error())
+		}
+	}
 }
 
 func DisconnectDB() {
