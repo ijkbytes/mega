@@ -11,5 +11,5 @@ type Model struct {
 }
 
 var AllModels = []interface{}{
-	&User{}, &Article{}, Tag{},
+	&User{}, &Article{}, &Tag{}, &Setting{},
 }

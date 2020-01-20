@@ -30,6 +30,17 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	// Only one user is currently allowed for the blog site
+	// todo support for multiple users
+	if count, err := service.User.UsersCount(); err != nil || count > 0 {
+		logger.Warnf("only one user is currently allowed for the blog site")
+		c.JSON(http.StatusForbidden, gin.H{
+			"code": CodeUserExist,
+			"msg":  getErrMsg(CodeUserExist),
+		})
+		return
+	}
+
 	salt := utils.Salt()
 	newUser := &model.User{
 		UserName:  req.UserName,

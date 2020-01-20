@@ -91,6 +91,9 @@ func GetRouter() *gin.Engine {
 			groupOthers.POST("/articles", api.AddArticle)
 			groupOthers.PUT("/articles/:id", api.EditArticle)
 			groupOthers.DELETE("/articles/:id", api.DeleteArticle)
+
+			groupOthers.GET("/settings/basic", api.GetBasicSettings)
+			groupOthers.PUT("/settings/basic", api.UpdateBasicSettings)
 		}
 	}
 

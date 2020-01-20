@@ -40,3 +40,8 @@ func (srv *userService) GetUser(id uint64) *model.User {
 
 	return ret
 }
+
+func (srv *userService) UsersCount() (count int, err error) {
+	err = db.Model(&model.User{}).Count(&count).Error
+	return
+}
