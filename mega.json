@@ -12,7 +12,7 @@
     "maxSize": 1,
     "maxAge": 1,
     "maxBackups": 7,
-    "console": false
+    "console": true
   },
 
   "db": {
@@ -29,6 +29,6 @@
   "session": {
     "secret": "mega",
     "name": "mega_sess",
-    "ttl": 120
+    "ttl": 3600
   }
 }

@@ -7,12 +7,7 @@
     <link type="text/css" rel="stylesheet" href="/static/simple/css/main.css">
 </head>
 <body>
-<header>
-    <div>
-        <h1><a href="/">Mega Simple</a></h1>
-    </div>
-    <nav><a href="/">About</a></nav>
-</header>
+{{template "header" .}}
 <main>
     <ul>
         {{ range .Articles}}
@@ -37,10 +32,6 @@
         </li>
     </ul>
 </main>
-<footer>
-    <div>
-        <div>Copyright © 2019–2020, ijkbytes transplant from <a href="https://github.com/yanlinlin82/simple-style/">simple-style</a>; all rights reserved.</div>
-    </div>
-</footer>
+{{template "footer" .}}
 </body>
 </html>
