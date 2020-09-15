@@ -2,10 +2,11 @@ package utils
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"math"
 	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Pagination struct {

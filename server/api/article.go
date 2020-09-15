@@ -1,10 +1,11 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ijkbytes/mega/base/log"
 	"github.com/ijkbytes/mega/service"
-	"net/http"
 )
 
 func GetArticle(c *gin.Context) {

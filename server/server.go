@@ -2,6 +2,9 @@ package server
 
 import (
 	"fmt"
+	"net/http"
+	"runtime"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -11,8 +14,6 @@ import (
 	"github.com/ijkbytes/mega/server/middleware"
 	"github.com/ijkbytes/mega/server/pages"
 	"go.uber.org/zap"
-	"net/http"
-	"runtime"
 )
 
 var logger *zap.Logger

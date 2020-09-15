@@ -1,11 +1,12 @@
 package utils
 
 import (
-	"github.com/microcosm-cc/bluemonday"
-	"github.com/russross/blackfriday"
 	"html/template"
 	"regexp"
 	"strings"
+
+	"github.com/microcosm-cc/bluemonday"
+	"github.com/russross/blackfriday"
 )
 
 func MarkdownToHtml(mdText string) template.HTML {

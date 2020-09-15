@@ -1,11 +1,12 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ijkbytes/mega/base/log"
 	"github.com/ijkbytes/mega/model"
 	"github.com/ijkbytes/mega/service"
-	"net/http"
 )
 
 func GetBasicSettings(c *gin.Context) {

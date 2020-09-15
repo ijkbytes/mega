@@ -1,6 +1,10 @@
 package api
 
 import (
+	"net/http"
+	"strings"
+	"time"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/ijkbytes/mega/base/config"
@@ -8,9 +12,6 @@ import (
 	"github.com/ijkbytes/mega/model"
 	"github.com/ijkbytes/mega/service"
 	"github.com/ijkbytes/mega/utils"
-	"net/http"
-	"strings"
-	"time"
 )
 
 func Register(c *gin.Context) {

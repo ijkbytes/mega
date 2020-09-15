@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/ijkbytes/mega/base/config"
@@ -9,7 +11,6 @@ import (
 	"github.com/ijkbytes/mega/server"
 	"github.com/ijkbytes/mega/service"
 	"go.uber.org/zap"
-	"net/http"
 )
 
 type Application struct {
@@ -38,5 +39,7 @@ func main() {
 		router: server.GetRouter(),
 	}
 
-	app.run()
+	if err := app.run(); err != nil {
+		panic(err)
+	}
 }

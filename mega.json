@@ -17,12 +17,12 @@
 
   "db": {
     "type": "mysql",
-    "user": "root",
-    "password": "12345",
+    "user": "mega_admin",
+    "password": "12345678",
     "host": "localhost:3306",
     "name": "mega",
     "tablePrefix": "mega_",
-    "migrate": false,
+    "migrate": true,
     "debug": true
   },
 

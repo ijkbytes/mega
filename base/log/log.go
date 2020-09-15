@@ -1,11 +1,12 @@
 package log
 
 import (
+	"os"
+
 	"github.com/ijkbytes/mega/base/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"os"
 )
 
 var logger *zap.Logger

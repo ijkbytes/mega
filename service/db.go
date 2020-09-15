@@ -2,11 +2,12 @@ package service
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/ijkbytes/mega/base/config"
 	"github.com/ijkbytes/mega/base/log"
 	"github.com/ijkbytes/mega/model"
 	"github.com/jinzhu/gorm"
-	"time"
 )
 
 var logger = log.Get("service")
