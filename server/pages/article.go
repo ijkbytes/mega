@@ -1,11 +1,12 @@
 package pages
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ijkbytes/mega/service"
 	"github.com/ijkbytes/mega/utils"
-	"net/http"
-	"strconv"
 )
 
 func Article(c *gin.Context) {

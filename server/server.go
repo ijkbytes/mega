@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"path/filepath"
 	"runtime"
 
 	"github.com/gin-contrib/sessions"
@@ -56,6 +57,21 @@ func newRouter() *gin.Engine {
 	return engine
 }
 
+func loadTmplFilesAndStatic(router *gin.Engine) {
+	normalPagesTmpl, _ := filepath.Glob("views/theme/simple/*.html")
+	adminPagesTmpl, _ := filepath.Glob("views/admin/*.html")
+	var allTmpl []string
+	for _, v := range normalPagesTmpl {
+		allTmpl = append(allTmpl, v)
+	}
+	for _, v := range adminPagesTmpl {
+		allTmpl = append(allTmpl, v)
+	}
+
+	router.LoadHTMLFiles(allTmpl...)
+	router.Static("/static/simple/css", "views/theme/simple/css")
+}
+
 func GetRouter() *gin.Engine {
 	logger = log.Get("server")
 	router := newRouter()
@@ -63,14 +79,18 @@ func GetRouter() *gin.Engine {
 	store := cookie.NewStore([]byte(config.Mega.Session.Secret))
 	router.Use(sessions.Sessions(config.Mega.Session.Name, store))
 
-	router.LoadHTMLGlob("theme/simple/*.html")
-	router.Static("/static/simple/css", "theme/simple/css")
+	loadTmplFilesAndStatic(router)
 
 	pagesGroup := router.Group("/")
 	{
 		pagesGroup.GET("/", pages.Index)
 		pagesGroup.GET("/about", pages.About)
 		pagesGroup.GET("/articles/:id", pages.Article)
+
+		adminGroup := router.Group("/admin")
+		{
+			adminGroup.GET("/login", pages.Login)
+		}
 	}
 
 	apiGroup := router.Group("/api")
